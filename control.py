@@ -44,6 +44,8 @@ class PumpController:
         outside_temp = temperatures["outside_temp"]
         water_temp = temperatures["water_temp"]
 
+        pump_power_prev = self.pump_power
+
         self.target_temp = approximate_target_temp(outside_temp)
         logger.debug(f"Interpolated target temp: {self.target_temp}")
 
@@ -56,5 +58,6 @@ class PumpController:
 
         self.current_time += 1
 
-        self.pump_control.set_voltage(self.pump_power)
-        pump_mock.set_power(self.pump_power)
+        if self.pump_power != pump_power_prev:
+            self.pump_control.set_voltage(self.pump_power)
+            pump_mock.set_power(self.pump_power)
