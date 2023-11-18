@@ -79,13 +79,13 @@ class TempManager:
 
     def __init__(self):
         try:
-            self.sensor1 = DS18Sensor(name="Outside_temp", sensor_id=sensor1_id)
+            self.sensor1 = DS18Sensor(name="outside_temp", sensor_id=sensor1_id)
         except:
             logger.error("Could not initialize temp sensor 1")
             self.sensor1 = None
 
         try:
-            self.sensor2 = DS18Sensor(name="Generic_temp", sensor_id=sensor2_id)
+            self.sensor2 = DS18Sensor(name="water_temp", sensor_id=sensor2_id)
         except:
             logger.error("Could not initialize temp sensor 2")
             self.sensor2 = None
@@ -98,6 +98,6 @@ class TempManager:
                  If a sensor is not initialized, its value is set to None.
         """
         return {
-            "sensor_1": self.sensor1.get_temperature() if self.sensor1 is not None else None,
-            "sensor_2": self.sensor2.get_temperature() if self.sensor2 is not None else None,
+            self.sensor1.name: self.sensor1.get_temperature() if self.sensor1 is not None else None,
+            self.sensor2.name: self.sensor2.get_temperature() if self.sensor2 is not None else None,
         }

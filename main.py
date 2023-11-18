@@ -71,7 +71,7 @@ def main():
             if value is not None:
                 logger.info(f"The temperature of {sensor} is {value:.4f} C")
 
-        controller.control_temp(temperatures["sensor_1"], pump_mock)
+        controller.control_temp(temperatures, pump_mock)
         pump_mock.update()
         time.sleep(2)
 
