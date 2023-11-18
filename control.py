@@ -38,7 +38,7 @@ class PumpController:
         self.pump_power = 0
         self.pump_control = pump_control
         self.delay_time = 10
-        self.current_time = 0
+        self.current_time = 12
 
     def control_temp(self, temperatures: dict, pump_mock: PumpMock):
         outside_temp = temperatures["outside_temp"]
