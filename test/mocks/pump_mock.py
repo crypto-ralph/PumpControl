@@ -15,6 +15,6 @@ class PumpMock:
             self.power = value
 
     def update(self):
-        temp = self.temp_manager.sensor1.temperature
-        self.temp_manager.sensor1.temperature = temp + self.power * 0.15
-        self.temp_manager.sensor1.temperature -= 0.13
+        temp = self.temp_manager.sensor2.temperature
+        self.temp_manager.sensor2.temperature = temp + self.power * 0.15
+        self.temp_manager.sensor2.temperature -= 0.13
