@@ -80,10 +80,14 @@ class TempManager:
     def __init__(self):
         try:
             self.sensor1 = DS18Sensor(name="Outside_temp", sensor_id=sensor1_id)
+        except:
+            logger.error("Could not initialize temp sensor 1")
+            self.sensor1 = None
+
+        try:
             self.sensor2 = DS18Sensor(name="Generic_temp", sensor_id=sensor2_id)
         except:
-            logger.error("Could not initialize temp sensor")
-            self.sensor1 = None
+            logger.error("Could not initialize temp sensor 2")
             self.sensor2 = None
 
     def get_temperatures(self) -> dict[str, float]:
