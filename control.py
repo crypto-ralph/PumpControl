@@ -9,7 +9,7 @@ class PumpController:
         self.pump_control = pump_control
 
     def control_temp(self, current_temp: float, pump_mock: PumpMock):
-        if current_temp < self.temp_target and self.pump_power <= 10:
+        if current_temp < self.temp_target and self.pump_power < 10:
             self.pump_power += 1
         if current_temp >= self.temp_target:
             self.pump_power = 0
