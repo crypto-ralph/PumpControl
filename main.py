@@ -7,7 +7,7 @@ import time
 import sys
 import select
 
-from Domoticz import Domoticz
+from domoticz import Domoticz
 from PWM import PumpVoltageControl
 from control import PumpController
 from temperature import TempManager
