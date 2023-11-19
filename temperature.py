@@ -66,7 +66,7 @@ class DS18Sensor(TempSensor):
         super().__init__(name)
         self.sensor = W1ThermSensor(sensor_id=sensor_id)
 
-    def get_temperature(self):
+    def get_temperature(self) -> float:
         return self.sensor.get_temperature()
 
 

@@ -21,7 +21,7 @@ class Domoticz:
 
     def domoticz_get(self, params: dict) -> Optional[str]:
         response = requests.get(self.url, params, verify=False)
-        logger.debug(f"Response code: {response.status_code}. Message: {response.text}")
+        # logger.debug(f"Response code: {response.status_code}. Message: {response.text}")
         if response.status_code == 200:
             return response.text
         else:
