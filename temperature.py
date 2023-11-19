@@ -53,6 +53,9 @@ class DomoticzSensor(TempSensor):
     def get_temperature(self) -> float:
         return self.domoticz.get_unit_data(self.sensor_idx)
 
+    def __repr__(self):
+        return f"DomoticzTempSensor(name='{self.name}')"
+
 
 class DS18Sensor(TempSensor):
     """
@@ -69,6 +72,9 @@ class DS18Sensor(TempSensor):
     def get_temperature(self) -> float:
         return self.sensor.get_temperature()
 
+    def __repr__(self):
+        return f"DS18B20TempSensor(name='{self.name}')"
+
 
 class TempManager:
     """
@@ -83,13 +89,13 @@ class TempManager:
         for sensor in temperature_sensors:
             if sensor["type"] == "DS18B20":
                 try:
-                    self.sensors.append(DS18Sensor(name="outside_temp", sensor_id=sensor["sensor_id"]))
+                    self.sensors.append(DS18Sensor(name=sensor["name"], sensor_id=sensor["sensor_id"]))
                 except:
                     logger.error(f"Could not initialize sensor: {sensor['name']}")
             elif sensor["type"] == "Domoticz":
                 if domoticz is not None:
                     self.sensors.append(DomoticzSensor(
-                        name="outside_temp",
+                        name=sensor["name"],
                         sensor_idx=sensor["sensor_idx"],
                         domoticz=domoticz
                     ))
@@ -105,5 +111,4 @@ class TempManager:
         :return: A dictionary with the sensor names as keys and their respective temperatures as values.
                  If a sensor is not initialized, its value is set to None.
         """
-        logger.debug(self.sensors)
         return {sensor.name: sensor.get_temperature() for sensor in self.sensors}

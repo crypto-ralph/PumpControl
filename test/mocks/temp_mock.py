@@ -2,8 +2,8 @@ from temperature import TempManager
 
 
 def mock_temp_manager(manager: TempManager):
-    manager.sensors[0] = TempSensorMock("outside_temp", 3)
-    manager.sensors[1] = TempSensorMock("water_temp", 10)
+        manager.sensors = [TempSensorMock("outside_temp", 3),
+                           TempSensorMock("water_temp", 10)]
 
 
 class TempSensorMock:

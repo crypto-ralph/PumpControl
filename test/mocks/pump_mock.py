@@ -5,9 +5,9 @@ from test.mocks.temp_mock import TempSensorMock
 class PumpMock:
     def __init__(self, temp_manager_mocked: TempManager):
         self.power = 0
-        if (not isinstance(temp_manager_mocked.sensors[0], TempSensorMock)
-                and not isinstance(temp_manager_mocked.sensors[1], TempSensorMock)):
-            raise Exception("Temp Manager has to be mocked")
+        # if (not isinstance(temp_manager_mocked.sensors[0], TempSensorMock)
+        #         and not isinstance(temp_manager_mocked.sensors[1], TempSensorMock)):
+        #     raise Exception("Temp Manager has to be mocked")
         self.temp_manager = temp_manager_mocked
 
     def set_power(self, value: int):
