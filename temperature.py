@@ -1,9 +1,10 @@
 import logging
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from w1thermsensor import W1ThermSensor
 from domoticz import Domoticz
-from config import sensor1_id, sensor2_id
+from config import sensor1_id, sensor2_id, temperature_sensors
 
 logger = logging.getLogger(__name__)
 
@@ -77,18 +78,25 @@ class TempManager:
     the corresponding sensor attributes are set to None.
     """
 
-    def __init__(self):
-        try:
-            self.sensor1 = DS18Sensor(name="outside_temp", sensor_id=sensor1_id)
-        except:
-            logger.error("Could not initialize temp sensor 1")
-            self.sensor1 = None
-
-        try:
-            self.sensor2 = DS18Sensor(name="water_temp", sensor_id=sensor2_id)
-        except:
-            logger.error("Could not initialize temp sensor 2")
-            self.sensor2 = None
+    def __init__(self, domoticz: Optional[Domoticz] = None):
+        self.sensors = []
+        for sensor in temperature_sensors:
+            if sensor["type"] == "DS18B20":
+                try:
+                    self.sensors.append(DS18Sensor(name="outside_temp", sensor_id=sensor["sensor_id"]))
+                except:
+                    logger.error(f"Could not initialize sensor: {sensor['name']}")
+            elif sensor["type"] == "domoticz":
+                if domoticz is not None:
+                    self.sensors.append(DomoticzSensor(
+                        name="outside_temp",
+                        sensor_idx=sensor["sensor_idx"],
+                        domoticz=domoticz
+                    ))
+                else:
+                    logger.error("Domoticz is not configured")
+            else:
+                logger.error(f"Unknown sensor type: {sensor['type']}")
 
     def get_temperatures(self) -> dict[str, float]:
         """
@@ -97,7 +105,4 @@ class TempManager:
         :return: A dictionary with the sensor names as keys and their respective temperatures as values.
                  If a sensor is not initialized, its value is set to None.
         """
-        return {
-            self.sensor1.name: self.sensor1.get_temperature() if self.sensor1 is not None else None,
-            self.sensor2.name: self.sensor2.get_temperature() if self.sensor2 is not None else None,
-        }
+        return {sensor.name: sensor.get_temperature() for sensor in self.sensors}
