@@ -105,4 +105,5 @@ class TempManager:
         :return: A dictionary with the sensor names as keys and their respective temperatures as values.
                  If a sensor is not initialized, its value is set to None.
         """
+        logger.debug(self.sensors)
         return {sensor.name: sensor.get_temperature() for sensor in self.sensors}
