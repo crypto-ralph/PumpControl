@@ -49,7 +49,10 @@ class PumpController:
         self.target_temp = approximate_target_temp(outside_temp)
         logger.debug(f"Interpolated target temp: {self.target_temp}")
 
-        if water_temp < self.target_temp and self.pump_power < 10 and self.current_time > self.delay_time:
+        if (self.target_temp.target_temp is not None
+                and water_temp < self.target_temp
+                and self.pump_power < 10
+                and self.current_time > self.delay_time):
             self.pump_power += 1
             self.current_time = 0
         if water_temp >= self.target_temp:
