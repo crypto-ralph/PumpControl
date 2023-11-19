@@ -3,6 +3,8 @@ import logging
 log_format = "%(asctime)s.%(msecs)03d [%(levelname)-8s]:%(name)s:%(message)s"
 formatter = logging.Formatter(fmt=log_format, datefmt='%Y-%m-%d %H:%M:%S')
 
+simulation_enabled = False
+
 PWM_PIN = 18
 
 temperature_sensors = [
