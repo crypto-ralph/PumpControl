@@ -35,7 +35,7 @@ class Domoticz:
             "rid": idx,
         }
         result = json.loads(self.domoticz_get(params))
-        return float(result["result"][0]["Data"])
+        return float(result["result"][0]["Data"][:-2])
 
     def send_log(self, message: str, level: LogLevel = LogLevel.NORMAL):
         params = {
