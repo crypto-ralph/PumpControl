@@ -4,7 +4,7 @@ from typing import Optional
 
 from w1thermsensor import W1ThermSensor
 from domoticz import Domoticz
-from config import sensor1_id, sensor2_id, temperature_sensors
+from config import temperature_sensors
 
 logger = logging.getLogger(__name__)
 
