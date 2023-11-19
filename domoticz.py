@@ -34,8 +34,13 @@ class Domoticz:
             "param": "getdevices",
             "rid": idx,
         }
-        result = json.loads(self.domoticz_get(params))
-        return float(result["result"][0]["Data"][:-2])
+        response = json.loads(self.domoticz_get(params))
+        try:
+            result = float(response["result"][0]["Data"][:-2])
+        except KeyError:
+            logger.error(f"Could not fetch data for sensor idx: {idx}")
+            result = None
+        return result
 
     def send_log(self, message: str, level: LogLevel = LogLevel.NORMAL):
         params = {
