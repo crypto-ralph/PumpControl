@@ -16,11 +16,11 @@ temperature_sensors = [
         "type": "DS18B20",
         "sensor_id": "000004548229",
     },
-    # {
-    #     "name": "test_temp",
-    #     "type": "Domoticz",
-    #     "sensor_idx": "24",
-    # },
+    {
+        "name": "domoticz_test_temp",
+        "type": "Domoticz",
+        "sensor_idx": "1",
+    },
 ]
 
 temperature_table = {

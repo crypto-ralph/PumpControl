@@ -28,14 +28,14 @@ class Domoticz:
             logger.error(f"Wrong status: {response.status_code}")
             return None
 
-    def get_unit_data(self, idx: int):
+    def get_unit_data(self, idx: int) -> float:
         params = {
             "type": "command",
             "param": "getdevices",
             "rid": idx,
         }
         result = json.loads(self.domoticz_get(params))
-        return result["result"][0]["Data"]
+        return float(result["result"][0]["Data"])
 
     def send_log(self, message: str, level: LogLevel = LogLevel.NORMAL):
         params = {

@@ -37,7 +37,7 @@ home_heating = 30
 
 # Classes initializations
 domoticz = Domoticz(username, password, domoticz_ip, domoticz_port)
-temp_manager = TempManager()
+temp_manager = TempManager(domoticz=domoticz)
 pump_control = PumpVoltageControl(PWM_PIN)
 controller = PumpController(pump_control)
 

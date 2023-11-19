@@ -50,7 +50,7 @@ class DomoticzSensor(TempSensor):
         self.sensor_idx = sensor_idx
         self.domoticz = domoticz
 
-    def get_temperature(self):
+    def get_temperature(self) -> float:
         return self.domoticz.get_unit_data(self.sensor_idx)
 
 
@@ -86,7 +86,7 @@ class TempManager:
                     self.sensors.append(DS18Sensor(name="outside_temp", sensor_id=sensor["sensor_id"]))
                 except:
                     logger.error(f"Could not initialize sensor: {sensor['name']}")
-            elif sensor["type"] == "domoticz":
+            elif sensor["type"] == "Domoticz":
                 if domoticz is not None:
                     self.sensors.append(DomoticzSensor(
                         name="outside_temp",
