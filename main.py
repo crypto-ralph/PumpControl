@@ -7,7 +7,7 @@ from domoticz import Domoticz
 from PWM import PumpVoltageControl
 from control import PumpController
 from temperature import TempManager
-from config import PWM_PIN, log_format, simulation_enabled
+from config import PWM_PIN, log_format, simulation_enabled, control_interval
 from test.mocks.pump_mock import PumpMock
 from test.mocks.temp_mock import mock_temp_manager
 
@@ -19,10 +19,8 @@ logging.basicConfig(level=logging.DEBUG,
 
 keep_running = True
 
-# Load the environment variables from .env file
-load_dotenv()
 
-# Accessing the variables
+load_dotenv()
 username = os.getenv('USERNAME')
 password = os.getenv('PASSWORD')
 domoticz_ip = os.getenv('DOMOTICZ_IP')
@@ -38,7 +36,9 @@ if simulation_enabled is True:
     mock_temp_manager(temp_manager)
     pump_mock = PumpMock(temp_manager)
 
-controller = PumpController(pump_control, simulation_enabled)
+
+controller = PumpController(pump_control)
+
 
 def main():
     while True:
@@ -48,9 +48,13 @@ def main():
             if value is not None:
                 logger.info(f"The temperature of {sensor} is {value:.4f} C")
 
-        controller.control_temp(temperatures, pump_mock)
-        pump_mock.update()
-        time.sleep(2)
+        if simulation_enabled is True:
+            controller.control_temp(temperatures, pump_mock)
+            pump_mock.update()
+        else:
+            controller.control_temp(temperatures)
+
+        time.sleep(control_interval)
 
 
 if __name__ == "__main__":
@@ -58,4 +62,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         logger.info("Terminating...")
-

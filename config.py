@@ -5,6 +5,8 @@ formatter = logging.Formatter(fmt=log_format, datefmt='%Y-%m-%d %H:%M:%S')
 
 simulation_enabled = False
 
+control_interval = 2
+
 PWM_PIN = 18
 
 temperature_sensors = [

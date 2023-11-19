@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from PWM import PumpVoltageControl
 from config import temperature_table
@@ -33,15 +34,14 @@ def approximate_target_temp(outside_temp: float):
 
 
 class PumpController:
-    def __init__(self, pump_control: PumpVoltageControl, simulation_enabled: bool = False):
+    def __init__(self, pump_control: PumpVoltageControl):
         self.target_temp = 0
         self.pump_power = 0
         self.pump_control = pump_control
         self.delay_time = 10
         self.current_time = 12
-        self.simulation_enabled = simulation_enabled
 
-    def control_temp(self, temperatures: dict, pump_mock: PumpMock):
+    def control_temp(self, temperatures: dict, pump_mock: Optional[PumpMock] = None):
         outside_temp = temperatures["outside_temp"]
         water_temp = temperatures["water_temp"]
 
@@ -66,5 +66,5 @@ class PumpController:
 
         if self.pump_power != pump_power_prev:
             self.pump_control.set_voltage(self.pump_power)
-            if self.simulation_enabled is True:
+            if pump_mock is not None:
                 pump_mock.set_power(self.pump_power)
