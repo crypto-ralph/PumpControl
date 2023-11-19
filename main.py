@@ -67,6 +67,7 @@ def wait_for_input_thread():
 def main():
     while True:
         temperatures = temp_manager.get_temperatures()
+        logger.debug(temperatures)
         for sensor, value in temperatures.items():
             if value is not None:
                 logger.info(f"The temperature of {sensor} is {value:.4f} C")
