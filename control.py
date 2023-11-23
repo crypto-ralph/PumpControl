@@ -36,7 +36,7 @@ def nearest_value(temp):
     if temp > nearest_key != keys[-1] and (temp - nearest_key) >= 2:
         index = keys.index(nearest_key)
         nearest_key = keys[index + 1]
-    return nearest_key
+    return temp_diff_table[nearest_key]
 
 
 class PumpController:
@@ -44,7 +44,7 @@ class PumpController:
         self.target_temp = 0
         self.pump_power = 0
         self.pump_control = pump_control
-        self.delay_time = 10
+        self.delay_time = 15
         self.current_time = 12
 
     def control_temp(self, temperatures: dict[str, float], pump_mock: Optional[PumpMock] = None):
@@ -72,9 +72,11 @@ class PumpController:
                 logger.info("Fast heating activated due to low indoor temp")
                 self.pump_power = 10
             else:
-                diff_value = nearest_value(abs(self.target_temp - water_temp))
-                diff_value = nearest_value(diff_value)
-                self.pump_power = temp_diff_table[diff_value]
+                diff_value = self.target_temp - water_temp
+                if diff_value > 0:
+                    self.pump_power = nearest_value(diff_value)
+                else:
+                    self.pump_power -= 1
                 logger.debug(f"Power changed to {self.pump_power}")
                 self.current_time = 0
 
