@@ -59,6 +59,7 @@ class PumpController:
                 and self.pump_power < 10
                 and self.current_time > self.delay_time):
             self.pump_power += 1
+            logger.debug(f"Power: {self.pump_power}")
             self.current_time = 0
         if water_temp >= self.target_temp:
             self.pump_power = 0
