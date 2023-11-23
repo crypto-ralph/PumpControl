@@ -55,17 +55,18 @@ class PumpController:
         if self.target_temp is None:
             return
 
-        if (water_temp < self.target_temp
-                and self.pump_power < 10
-                and self.current_time > self.delay_time):
-            self.pump_power += 1
+        if self.current_time > self.delay_time:
             logger.debug(f"Power: {self.pump_power}")
-            self.current_time = 0
-        if water_temp >= self.target_temp:
-            self.pump_power = 0
-            self.current_time = 0
 
-        if self.pump_power != pump_power_prev:
-            self.pump_control.set_voltage(self.pump_power)
-            if pump_mock is not None:
-                pump_mock.set_power(self.pump_power)
+            if water_temp < self.target_temp and self.pump_power < 10:
+                self.pump_power += 1
+                logger.debug(f"Power increased to {self.pump_power}")
+                self.current_time = 0
+            if water_temp >= self.target_temp:
+                self.pump_power = 0
+                self.current_time = 0
+
+            if self.pump_power != pump_power_prev:
+                self.pump_control.set_voltage(self.pump_power)
+                if pump_mock is not None:
+                    pump_mock.set_power(self.pump_power)
