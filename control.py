@@ -53,7 +53,7 @@ class PumpController:
         water_temp = temperatures["water_temp"]
 
         indoor_temps = [temperature for name, temperature in temperatures.items() if "indoor" in name]
-        min_indoor_temp = min(indoor_temps)
+        min_indoor_temp = min(indoor_temps) if indoor_temps != [] else None
 
         pump_power_prev = self.pump_power
 
@@ -69,7 +69,7 @@ class PumpController:
             logger.debug(f"Power: {self.pump_power}")
 
             # fast heating check
-            if min_indoor_temp != [] and min_indoor_temp < 19:
+            if min_indoor_temp is not None and min_indoor_temp < 19:
                 logger.info("Fast heating activated due to low indoor temp")
                 self.pump_power = 10
             else:
