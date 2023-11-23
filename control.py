@@ -36,8 +36,7 @@ def nearest_value(temp):
     if temp > nearest_key != keys[-1] and (temp - nearest_key) >= 2:
         index = keys.index(nearest_key)
         nearest_key = keys[index + 1]
-
-    return temp_diff_table[nearest_key]
+    return nearest_key
 
 
 class PumpController:
