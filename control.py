@@ -69,7 +69,7 @@ class PumpController:
             logger.debug(f"Power: {self.pump_power}")
 
             # fast heating check
-            if min_indoor_temp < 19:
+            if min_indoor_temp != [] and min_indoor_temp < 19:
                 logger.info("Fast heating activated due to low indoor temp")
                 self.pump_power = 10
             else:
