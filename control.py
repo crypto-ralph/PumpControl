@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from PWM import PumpVoltageControl
-from config import temperature_table
+from config import temperature_table, temp_diff_table
 from test.mocks.pump_mock import PumpMock
 
 logger = logging.getLogger(__name__)
@@ -13,10 +13,13 @@ def interpolate(x0, y0, x1, y1, x):
     return y0 + (x - x0) * (y1 - y0) / (x1 - x0)
 
 
-def approximate_target_temp(outside_temp: float):
+def approximate_target_temp(outside_temp: float) -> Optional[float]:
     """Approximate target water temperature for a given outside temperature."""
     # Sort the keys of the temperature table
     sorted_temps = sorted(temperature_table.keys())
+
+    if max(temperature_table.keys()) < outside_temp < min(temperature_table.keys()):
+        return None
 
     # Find the bracketing temperatures
     for i in range(len(sorted_temps) - 1):
@@ -25,12 +28,16 @@ def approximate_target_temp(outside_temp: float):
             y0, y1 = temperature_table[x0], temperature_table[x1]
             return interpolate(x0, y0, x1, y1, outside_temp)
 
-    # If outside temperature is above highest value in the table
-    if outside_temp > max(temperature_table.keys()):
-        return None
 
-    # If outside temperature is below lowest value in the table
-    return "Temperature too low for approximation"
+def nearest_value(temp):
+    keys = list(temp_diff_table.keys())
+    nearest_key = min(keys, key=lambda k: abs(k - temp))
+
+    if temp > nearest_key != keys[-1] and (temp - nearest_key) >= 2:
+        index = keys.index(nearest_key)
+        nearest_key = keys[index + 1]
+
+    return temp_diff_table[nearest_key]
 
 
 class PumpController:
@@ -41,9 +48,12 @@ class PumpController:
         self.delay_time = 10
         self.current_time = 12
 
-    def control_temp(self, temperatures: dict, pump_mock: Optional[PumpMock] = None):
+    def control_temp(self, temperatures: dict[str, float], pump_mock: Optional[PumpMock] = None):
         outside_temp = temperatures["outside_temp"]
         water_temp = temperatures["water_temp"]
+
+        indoor_temps = [temperature for name, temperature in temperatures.items() if "indoor" in name]
+        min_indoor_temp = min(indoor_temps)
 
         pump_power_prev = self.pump_power
 
@@ -58,12 +68,15 @@ class PumpController:
         if self.current_time > self.delay_time:
             logger.debug(f"Power: {self.pump_power}")
 
-            if water_temp < self.target_temp and self.pump_power < 10:
-                self.pump_power += 1
-                logger.debug(f"Power increased to {self.pump_power}")
-                self.current_time = 0
-            if water_temp >= self.target_temp:
-                self.pump_power = 0
+            # fast heating check
+            if min_indoor_temp < 19:
+                logger.info("Fast heating activated due to low indoor temp")
+                self.pump_power = 10
+            else:
+                diff_value = nearest_value(abs(self.target_temp - water_temp))
+                diff_value = nearest_value(diff_value)
+                self.pump_power = temp_diff_table[diff_value]
+                logger.debug(f"Power changed to {self.pump_power}")
                 self.current_time = 0
 
             if self.pump_power != pump_power_prev:
