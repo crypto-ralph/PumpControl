@@ -76,7 +76,8 @@ class PumpController:
                 if diff_value > 0:
                     self.pump_power = nearest_value(diff_value)
                 else:
-                    self.pump_power -= 1
+                    if self.pump_power >= 0:
+                        self.pump_power -= 1
                 logger.debug(f"Power changed to {self.pump_power}")
                 self.current_time = 0
 
